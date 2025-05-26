@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Paul's Primary School Construction Site</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 20px 0 15px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+        }
+
+        .tables-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .worker-table {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-add {
+            background-color: var(--success-color);
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background-color: #219955;
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            animation: modalopen 0.3s;
+        }
+
+        @keyframes modalopen {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .transaction-history {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .transaction-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .summary-total {
+            font-weight: bold;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        /* Login Screen Styles */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .login-box {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-bottom: none;
+        }
+
+        .login-box p {
+            margin-bottom: 20px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #login-error {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .tables-container {
+                flex-direction: column;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+            
+            .modal-content {
+                margin: 20% auto;
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .checkbox-container {
+                flex-direction: column;
+                gap: 5px;
+                align-items: flex-start;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>St. Paul's Construction Site</h2>
+            <p>Enter your authorized email to access the system</p>
+            <input type="email" id="user-email" placeholder="your-email@gmail.com">
+            <button class="btn" onclick="checkEmailAccess()">Submit</button>
+            <p id="login-error">Access denied. Email not authorized.</p>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden until login) -->
+    <div id="main-content" style="display: none;">
+        <header>
+            <div class="container">
+                <h1>St. Paul's Primary School Construction Site</h1>
+                <p>Worker Payment Management System</p>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="tables-container">
+                <!-- Masonry Workers Table -->
+                <div class="worker-table">
+                    <h2>Masonry Workers (UGX 20,000/day)</h2>
+                    <table id="masonry-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Day</th>
+                                <th>Attendance</th>
+                                <th>Balance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masonry-workers">
+                            <!-- Masonry workers will be added here dynamically -->
+                        </tbody>
+                    </table>
+                    <button class="btn btn-add" id="add-mason">Add Masonry Worker</button>
+                </div>
+
+                <!-- Porters Table -->
+                <div class="worker-table">
+                    <h2>Porters (UGX 10,000/day)</h2>
+                    <table id="porter-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Day</th>
+                                <th>Attendance</th>
+                                <th>Balance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="porters">
+                            <!-- Porters will be added here dynamically -->
+                        </tbody>
+                    </table>
+                    <button class="btn btn-add" id="add-porter">Add Porter</button>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="summary">
+                <h3>Weekly Summary</h3>
+                <div class="summary-item">
+                    <span>Total Masonry Wages:</span>
+                    <span id="total-masonry">UGX 0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Total Porter Wages:</span>
+                    <span id="total-porter">UGX 0</span>
+                </div>
+                <div class="summary-item summary-total">
+                    <span>Total Wages:</span>
+                    <span id="total-wages">UGX 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Worker Modal -->
+        <div id="add-worker-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Add New Worker</h3>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="worker-form">
+                    <input type="hidden" id="worker-type">
+                    <div class="form-group">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="start-date">Date</label>
+                        <input type="date" id="start-date" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-danger" id="cancel-add">Cancel</button>
+                        <button type="submit" class="btn">Add Worker</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Cash Out Modal -->
+        <div id="cashout-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Cash Out</h3>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="cashout-form">
+                    <input type="hidden" id="cashout-worker-id">
+                    <div class="form-group">
+                        <label for="current-balance">Current Balance</label>
+                        <input type="text" id="current-balance" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="cashout-amount">Amount to Cash Out (UGX)</label>
+                        <input type="number" id="cashout-amount" required min="1000" step="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-balance">Balance After Cash Out</label>
+                        <input type="text" id="new-balance" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="cashout-date">Date</label>
+                        <input type="date" id="cashout-date" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-danger" id="cancel-cashout">Cancel</button>
+                        <button type="submit" class="btn">Process Cash Out</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Balance Details Modal -->
+        <div id="balance-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Balance Details</h3>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="form-group">
+                    <label>Current Balance</label>
+                    <input type="text" id="balance-details" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Total Earned</label>
+                    <input type="text" id="total-earned" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Total Cashed Out</label>
+                    <input type="text" id="total-cashed-out" readonly>
+                </div>
+                <div class="transaction-history" id="transaction-history">
+                    <h4>Transaction History</h4>
+                    <!-- Transactions will be added here dynamically -->
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" id="close-balance">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Workers data structure
+        let workers = {
+            masonry: [],
+            porter: []
+        };
+
+        // Authorized emails (slightly obfuscated)
+        const ALLOWED_EMAILS = [
+            "nuiin" + "lana" + "@gmail.com",
+            "nuiin" + "nelyce" + "@gmail.com"
+        ];
+
+        // DOM Elements
+        const loginScreen = document.getElementById('login-screen');
+        const mainContent = document.getElementById('main-content');
+        const masonryTable = document.getElementById('masonry-workers');
+        const porterTable = document.getElementById('porters');
+        const addMasonBtn = document.getElementById('add-mason');
+        const addPorterBtn = document.getElementById('add-porter');
+        const addWorkerModal = document.getElementById('add-worker-modal');
+        const cashoutModal = document.getElementById('cashout-modal');
+        const balanceModal = document.getElementById('balance-modal');
+        const workerForm = document.getElementById('worker-form');
+        const cashoutForm = document.getElementById('cashout-form');
+        const closeButtons = document.querySelectorAll('.close');
+        const cancelAddBtn = document.getElementById('cancel-add');
+        const cancelCashoutBtn = document.getElementById('cancel-cashout');
+        const closeBalanceBtn = document.getElementById('close-balance');
+        const workerTypeInput = document.getElementById('worker-type');
+        const modalTitle = document.getElementById('modal-title');
+        const totalMasonry = document.getElementById('total-masonry');
+        const totalPorter = document.getElementById('total-porter');
+        const totalWages = document.getElementById('total-wages');
+        const userEmailInput = document.getElementById('user-email');
+        const loginError = document.getElementById('login-error');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if already authenticated
+            if (localStorage.getItem('authenticated') === 'true') {
+                loginScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                initializeApp();
+            } else {
+                loginScreen.style.display = 'flex';
+                mainContent.style.display = 'none';
+            }
+            
+            // Set default date to today
+            document.getElementById('start-date').valueAsDate = new Date();
+            document.getElementById('cashout-date').valueAsDate = new Date();
+        });
+
+        function initializeApp() {
+            // Load data from localStorage if available
+            loadData();
+            
+            // Render workers tables
+            renderWorkersTables();
+            
+            // Update summary
+            updateSummary();
+            
+            // Event listeners
+            addMasonBtn.addEventListener('click', () => openAddWorkerModal('masonry'));
+            addPorterBtn.addEventListener('click', () => openAddWorkerModal('porter'));
+            
+            closeButtons.forEach(btn => {
+                btn.addEventListener('click', closeModal);
+            });
+            
+            cancelAddBtn.addEventListener('click', () => closeModal(addWorkerModal));
+            cancelCashoutBtn.addEventListener('click', () => closeModal(cashoutModal));
+            closeBalanceBtn.addEventListener('click', () => closeModal(balanceModal));
+            
+            workerForm.addEventListener('submit', addWorker);
+            cashoutForm.addEventListener('submit', processCashout);
+            
+            // Calculate new balance when cashout amount changes
+            document.getElementById('cashout-amount').addEventListener('input', updateNewBalance);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === addWorkerModal) closeModal(addWorkerModal);
+                if (e.target === cashoutModal) closeModal(cashoutModal);
+                if (e.target === balanceModal) closeModal(balanceModal);
+            });
+        }
+
+        function checkEmailAccess() {
+            const email = userEmailInput.value.trim().toLowerCase();
+            
+            if (ALLOWED_EMAILS.includes(email)) {
+                // Grant access
+                loginScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                localStorage.setItem('authenticated', 'true');
+                initializeApp();
+            } else {
+                // Deny access
+                loginError.style.display = 'block';
+                userEmailInput.style.borderColor = 'red';
+            }
+        }
+
+        function openAddWorkerModal(type) {
+            workerTypeInput.value = type;
+            modalTitle.textContent = type === 'masonry' ? 'Add Masonry Worker' : 'Add Porter';
+            addWorkerModal.style.display = 'block';
+        }
+
+        function closeModal(modal) {
+            if (modal) {
+                modal.style.display = 'none';
+            } else {
+                addWorkerModal.style.display = 'none';
+                cashoutModal.style.display = 'none';
+                balanceModal.style.display = 'none';
+            }
+        }
+
+        function addWorker(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('first-name').value.trim();
+            const lastName = document.getElementById('last-name').value.trim();
+            const date = document.getElementById('start-date').value;
+            const type = workerTypeInput.value;
+            
+            if (!firstName || !lastName || !date) return;
+            
+            const worker = {
+                id: Date.now().toString(),
+                firstName,
+                lastName,
+                type,
+                balance: 0,
+                attendance: [],
+                transactions: []
+            };
+            
+            workers[type].push(worker);
+            
+            // Clear form
+            workerForm.reset();
+            
+            // Close modal
+            closeModal(addWorkerModal);
+            
+            // Update UI
+            renderWorkersTables();
+            updateSummary();
+            saveData();
+        }
+
+        function renderWorkersTables() {
+            // Clear tables
+            masonryTable.innerHTML = '';
+            porterTable.innerHTML = '';
+            
+            // Render masonry workers
+            workers.masonry.forEach(worker => {
+                const row = createWorkerRow(worker);
+                masonryTable.appendChild(row);
+            });
+            
+            // Render porters
+            workers.porter.forEach(worker => {
+                const row = createWorkerRow(worker);
+                porterTable.appendChild(row);
+            });
+        }
+
+        function createWorkerRow(worker) {
+            const today = new Date().toISOString().split('T')[0];
+            const dayOfWeek = getDayOfWeek(today);
+            
+            // Check if worker has attendance for today
+            const todayAttendance = worker.attendance.find(a => a.date === today);
+            
+            const row = document.createElement('tr');
+            row.dataset.id = worker.id;
+            row.dataset.type = worker.type;
+            
+            row.innerHTML = `
+                <td>${worker.firstName} ${worker.lastName}</td>
+                <td>${dayOfWeek}</td>
+                <td class="checkbox-container">
+                    <label>
+                        <input type="checkbox" class="present-checkbox" ${todayAttendance?.present ? 'checked' : ''}>
+                        Present
+                    </label>
+                    <label>
+                        <input type="checkbox" class="absent-checkbox" ${todayAttendance?.present === false ? 'checked' : ''}>
+                        Absent
+                    </label>
+                </td>
+                <td class="balance" style="cursor: pointer;">UGX ${worker.balance.toLocaleString()}</td>
+                <td>
+                    <button class="btn btn-small btn-danger delete-worker">Delete</button>
+                    <button class="btn btn-small cashout-btn" ${worker.balance <= 0 ? 'disabled' : ''}>Cash Out</button>
+                </td>
+            `;
+            
+            // Add event listeners
+            const presentCheckbox = row.querySelector('.present-checkbox');
+            const absentCheckbox = row.querySelector('.absent-checkbox');
+            const balanceCell = row.querySelector('.balance');
+            const deleteBtn = row.querySelector('.delete-worker');
+            const cashoutBtn = row.querySelector('.cashout-btn');
+            
+            presentCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    absentCheckbox.checked = false;
+                    markAttendance(worker, true);
+                }
+            });
+            
+            absentCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    presentCheckbox.checked = false;
+                    markAttendance(worker, false);
+                }
+            });
+            
+            balanceCell.addEventListener('click', () => showBalanceDetails(worker));
+            deleteBtn.addEventListener('click', () => deleteWorker(worker));
+            cashoutBtn.addEventListener('click', () => openCashoutModal(worker));
+            
+            return row;
+        }
+
+        function markAttendance(worker, isPresent) {
+            const today = new Date().toISOString().split('T')[0];
+            const dayOfWeek = getDayOfWeek(today);
+            
+            // Remove any existing attendance for today
+            worker.attendance = worker.attendance.filter(a => a.date !== today);
+            
+            if (isPresent) {
+                // Add wage if present
+                const wage = worker.type === 'masonry' ? 20000 : 10000;
+                worker.balance += wage;
+                
+                worker.attendance.push({
+                    date: today,
+                    day: dayOfWeek,
+                    present: true
+                });
+            } else {
+                // Just mark as absent (no wage added)
+                worker.attendance.push({
+                    date: today,
+                    day: dayOfWeek,
+                    present: false
+                });
+            }
+            
+            // Update UI
+            renderWorkersTables();
+            updateSummary();
+            saveData();
+        }
+
+        function openCashoutModal(worker) {
+            document.getElementById('cashout-worker-id').value = worker.id;
+            document.getElementById('current-balance').value = `UGX ${worker.balance.toLocaleString()}`;
+            document.getElementById('cashout-amount').value = '';
+            document.getElementById('new-balance').value = '';
+            document.getElementById('cashout-date').valueAsDate = new Date();
+            
+            cashoutModal.style.display = 'block';
+        }
+
+        function updateNewBalance() {
+            const currentBalance = parseInt(document.getElementById('current-balance').value.replace(/[^\d]/g, '') || 0);
+            const cashoutAmount = parseInt(document.getElementById('cashout-amount').value) || 0;
+            
+            if (cashoutAmount > currentBalance) {
+                document.getElementById('cashout-amount').value = currentBalance;
+                document.getElementById('new-balance').value = `UGX 0`;
+            } else {
+                document.getElementById('new-balance').value = `UGX ${(currentBalance - cashoutAmount).toLocaleString()}`;
+            }
+        }
+
+        function processCashout(e) {
+            e.preventDefault();
+            
+            const workerId = document.getElementById('cashout-worker-id').value;
+            const cashoutAmount = parseInt(document.getElementById('cashout-amount').value);
+            const date = document.getElementById('cashout-date').value;
+            
+            if (!workerId || !cashoutAmount || cashoutAmount <= 0 || !date) return;
+            
+            // Find worker
+            let worker;
+            let workerType;
+            
+            for (const type of ['masonry', 'porter']) {
+                const foundWorker = workers[type].find(w => w.id === workerId);
+                if (foundWorker) {
+                    worker = foundWorker;
+                    workerType = type;
+                    break;
+                }
+            }
+            
+            if (!worker) return;
+            
+            // Validate cashout amount
+            if (cashoutAmount > worker.balance) {
+                alert('Cashout amount cannot exceed current balance');
+                return;
+            }
+            
+            // Process cashout
+            worker.balance -= cashoutAmount;
+            
+            // Record transaction
+            worker.transactions.push({
+                date,
+                day: getDayOfWeek(date),
+                amount: cashoutAmount,
+                type: 'cashout'
+            });
+            
+            // Close modal
+            closeModal(cashoutModal);
+            
+            // Update UI
+            renderWorkersTables();
+            updateSummary();
+            saveData();
+        }
+
+        function showBalanceDetails(worker) {
+            document.getElementById('balance-details').value = `UGX ${worker.balance.toLocaleString()}`;
+            
+            // Calculate total earned and cashed out
+            const wage = worker.type === 'masonry' ? 20000 : 10000;
+            const daysPresent = worker.attendance.filter(a => a.present).length;
+            const totalEarned = daysPresent * wage;
+            const totalCashedOut = worker.transactions.reduce((sum, t) => sum + t.amount, 0);
+            
+            document.getElementById('total-earned').value = `UGX ${totalEarned.toLocaleString()}`;
+            document.getElementById('total-cashed-out').value = `UGX ${totalCashedOut.toLocaleString()}`;
+            
+            // Display transaction history
+            const historyContainer = document.getElementById('transaction-history');
+            historyContainer.innerHTML = '<h4>Transaction History</h4>';
+            
+            if (worker.transactions.length === 0) {
+                historyContainer.innerHTML += '<p>No transactions yet</p>';
+            } else {
+                worker.transactions.forEach(transaction => {
+                    const transactionEl = document.createElement('div');
+                    transactionEl.className = 'transaction-item';
+                    transactionEl.innerHTML = `
+                        <strong>${transaction.day}, ${transaction.date}</strong><br>
+                        Cashed out: UGX ${transaction.amount.toLocaleString()}
+                    `;
+                    historyContainer.appendChild(transactionEl);
+                });
+            }
+            
+            balanceModal.style.display = 'block';
+        }
+
+        function deleteWorker(worker) {
+            if (!confirm(`Are you sure you want to delete ${worker.firstName} ${worker.lastName}?`)) return;
+            
+            workers[worker.type] = workers[worker.type].filter(w => w.id !== worker.id);
+            
+            renderWorkersTables();
+            updateSummary();
+            saveData();
+        }
+
+        function updateSummary() {
+            const masonryTotal = workers.masonry.reduce((sum, worker) => sum + worker.balance, 0);
+            const porterTotal = workers.porter.reduce((sum, worker) => sum + worker.balance, 0);
+            const total = masonryTotal + porterTotal;
+            
+            totalMasonry.textContent = `UGX ${masonryTotal.toLocaleString()}`;
+            totalPorter.textContent = `UGX ${porterTotal.toLocaleString()}`;
+            totalWages.textContent = `UGX ${total.toLocaleString()}`;
+        }
+
+        function getDayOfWeek(dateString) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const date = new Date(dateString);
+            return days[date.getDay()];
+        }
+
+        function saveData() {
+            localStorage.setItem('constructionWorkers', JSON.stringify(workers));
+        }
+
+        function loadData() {
+            const savedData = localStorage.getItem('constructionWorkers');
+            if (savedData) {
+                workers = JSON.parse(savedData);
+            }
+        }
+    </script>
+</body>
+</html>
