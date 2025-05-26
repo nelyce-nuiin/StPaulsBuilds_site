@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>St. Paul's Primary School Construction Site</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -12,6 +13,9 @@
             --light-color: #ecf0f1;
             --dark-color: #2c3e50;
             --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --neumorph-light: #e0e5ec;
+            --neumorph-dark: #a3b1c6;
         }
 
         * {
@@ -22,15 +26,50 @@
         }
 
         body {
-            background-color: #f5f5f5;
+            background-color: var(--neumorph-light);
             color: var(--dark-color);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+        }
+
+        /* Neumorphic styles */
+        .neumorphic {
+            background: var(--neumorph-light);
+            border-radius: 10px;
+            box-shadow: 8px 8px 15px var(--neumorph-dark), 
+                        -8px -8px 15px white;
+        }
+
+        .neumorphic-inset {
+            background: var(--neumorph-light);
+            border-radius: 10px;
+            box-shadow: inset 3px 3px 5px var(--neumorph-dark), 
+                        inset -3px -3px 5px white;
+        }
+
+        .neumorphic-btn {
+            background: var(--neumorph-light);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 5px 5px 10px var(--neumorph-dark), 
+                        -5px -5px 10px white;
+            transition: all 0.2s ease;
+        }
+
+        .neumorphic-btn:hover {
+            box-shadow: 2px 2px 5px var(--neumorph-dark), 
+                        -2px -2px 5px white;
+        }
+
+        .neumorphic-btn:active {
+            box-shadow: inset 2px 2px 5px var(--neumorph-dark), 
+                        inset -2px -2px 5px white;
         }
 
         header {
@@ -56,6 +95,64 @@
             padding-bottom: 5px;
         }
 
+        .day-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .day-item {
+            text-align: center;
+            padding: 10px;
+            flex: 1;
+            margin: 0 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .day-item:hover {
+            box-shadow: 3px 3px 6px var(--neumorph-dark), 
+                        -3px -3px 6px white;
+        }
+
+        .day-item.current {
+            font-weight: bold;
+            color: var(--secondary-color);
+            box-shadow: inset 3px 3px 6px var(--neumorph-dark), 
+                        inset -3px -3px 6px white;
+        }
+
+        .day-item.completed {
+            position: relative;
+            background-color: rgba(39, 174, 96, 0.1);
+        }
+
+        .day-item.completed::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background-color: var(--success-color);
+            border-radius: 50%;
+        }
+
+        .time-notification {
+            background-color: var(--warning-color);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.1);
+        }
+
         .tables-container {
             display: flex;
             flex-wrap: wrap;
@@ -66,10 +163,8 @@
         .worker-table {
             flex: 1;
             min-width: 300px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px;
+            padding: 20px;
+            border-radius: 15px;
             margin-bottom: 20px;
         }
 
@@ -82,38 +177,45 @@
         th, td {
             padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
 
         th {
             background-color: var(--primary-color);
             color: white;
             font-weight: 600;
+            border-radius: 8px 8px 0 0;
         }
 
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: rgba(0,0,0,0.03);
         }
 
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: rgba(0,0,0,0.05);
         }
 
         .btn {
             display: inline-block;
-            padding: 8px 15px;
-            background-color: var(--secondary-color);
+            padding: 10px 20px;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 10px;
             cursor: pointer;
             text-decoration: none;
             font-size: 14px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            margin: 5px;
         }
 
-        .btn:hover {
+        .btn-primary {
+            background-color: var(--secondary-color);
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
             background-color: #2980b9;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .btn-add {
@@ -134,7 +236,7 @@
         }
 
         .btn-small {
-            padding: 5px 10px;
+            padding: 8px 15px;
             font-size: 12px;
         }
 
@@ -146,6 +248,7 @@
 
         .checkbox-container input[type="checkbox"] {
             transform: scale(1.2);
+            cursor: pointer;
         }
 
         .modal {
@@ -164,11 +267,12 @@
             background-color: white;
             margin: 10% auto;
             padding: 25px;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             width: 90%;
             max-width: 500px;
             animation: modalopen 0.3s;
+            position: relative;
         }
 
         @keyframes modalopen {
@@ -201,6 +305,7 @@
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
+            transition: color 0.3s;
         }
 
         .close:hover {
@@ -220,15 +325,18 @@
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 16px;
+            background-color: #f9f9f9;
+            transition: all 0.3s;
         }
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
         }
 
         .form-actions {
@@ -243,13 +351,19 @@
             max-height: 200px;
             overflow-y: auto;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
             padding: 10px;
+            background-color: #f9f9f9;
         }
 
         .transaction-item {
-            padding: 8px 0;
+            padding: 10px;
             border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+
+        .transaction-item:hover {
+            background-color: #f0f0f0;
         }
 
         .transaction-item:last-child {
@@ -257,29 +371,79 @@
         }
 
         .summary {
-            background-color: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 15px;
             margin-top: 20px;
         }
 
         .summary h3 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: var(--primary-color);
+            font-size: 1.3rem;
         }
 
         .summary-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            background-color: rgba(255,255,255,0.5);
         }
 
         .summary-total {
             font-weight: bold;
             border-top: 1px solid #ddd;
-            padding-top: 10px;
-            margin-top: 10px;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+
+        .absent-workers {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        .absent-workers h4 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .last-week-balance {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .last-week-balance h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .balance-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            background-color: rgba(255,255,255,0.7);
+            transition: all 0.3s;
+        }
+
+        .balance-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .balance-info {
+            flex: 1;
+        }
+
+        .balance-actions {
+            margin-left: 15px;
         }
 
         /* Login Screen Styles */
@@ -289,7 +453,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: white;
+            background: var(--neumorph-light);
             z-index: 1000;
             display: flex;
             justify-content: center;
@@ -298,12 +462,13 @@
         }
 
         .login-box {
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 30px;
+            border-radius: 20px;
             max-width: 400px;
-            width: 100%;
+            width: 90%;
             text-align: center;
+            box-shadow: 8px 8px 15px var(--neumorph-dark), 
+                       -8px -8px 15px white;
         }
 
         .login-box h2 {
@@ -314,22 +479,61 @@
 
         .login-box p {
             margin-bottom: 20px;
+            color: var(--dark-color);
         }
 
         .login-box input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: inset 3px 3px 5px var(--neumorph-dark), 
+                        inset -3px -3px 5px white;
         }
 
         #login-error {
-            color: red;
-            margin-top: 10px;
+            color: var(--accent-color);
+            margin-top: 15px;
             display: none;
+            font-weight: bold;
         }
 
+        /* Stats cards */
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .tables-container {
                 flex-direction: column;
@@ -341,13 +545,37 @@
             }
             
             .btn {
-                padding: 6px 12px;
+                padding: 8px 15px;
                 font-size: 13px;
             }
             
             .modal-content {
                 margin: 20% auto;
                 width: 95%;
+            }
+
+            .day-navigation {
+                flex-wrap: wrap;
+            }
+            
+            .day-item {
+                flex: 0 0 14%;
+                font-size: 12px;
+                padding: 5px;
+                margin: 0 2px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .stats-container {
+                flex-direction: column;
             }
         }
 
@@ -358,25 +586,58 @@
                 align-items: flex-start;
             }
             
-            .form-actions {
-                flex-direction: column;
+            .worker-table {
+                padding: 15px;
             }
-            
-            .btn {
-                width: 100%;
-                margin-bottom: 5px;
+
+            h1 {
+                font-size: 1.5rem;
             }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Animation for buttons */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
         }
     </style>
 </head>
 <body>
     <!-- Login Screen -->
     <div id="login-screen">
-        <div class="login-box">
+        <div class="login-box neumorphic">
             <h2>St. Paul's Construction Site</h2>
             <p>Enter your authorized email to access the system</p>
             <input type="email" id="user-email" placeholder="your-email@gmail.com">
-            <button class="btn" onclick="checkEmailAccess()">Submit</button>
+            <button class="btn btn-primary" onclick="checkEmailAccess()">Submit</button>
             <p id="login-error">Access denied. Email not authorized.</p>
         </div>
     </div>
@@ -391,16 +652,45 @@
         </header>
 
         <div class="container">
+            <!-- Stats Overview -->
+            <div class="stats-container">
+                <div class="stat-card neumorphic">
+                    <h3>Total Workers</h3>
+                    <div class="stat-value" id="total-workers">0</div>
+                </div>
+                <div class="stat-card neumorphic">
+                    <h3>Present Today</h3>
+                    <div class="stat-value" id="present-today">0</div>
+                </div>
+                <div class="stat-card neumorphic">
+                    <h3>Absent Today</h3>
+                    <div class="stat-value" id="absent-today">0</div>
+                </div>
+                <div class="stat-card neumorphic">
+                    <h3>Total Wages</h3>
+                    <div class="stat-value" id="total-wages-stat">UGX 0</div>
+                </div>
+            </div>
+
+            <!-- Day Navigation -->
+            <div class="day-navigation neumorphic" id="day-navigation">
+                <!-- Days will be populated by JavaScript -->
+            </div>
+
+            <!-- Time Restriction Notification -->
+            <div class="time-notification" id="time-notification">
+                <i class="fas fa-exclamation-circle"></i> Attendance can only be marked between 5:00 PM and 7:00 PM
+            </div>
+
             <div class="tables-container">
                 <!-- Masonry Workers Table -->
-                <div class="worker-table">
+                <div class="worker-table neumorphic">
                     <h2>Masonry Workers (UGX 20,000/day)</h2>
                     <table id="masonry-table">
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Day</th>
-                                <th>Attendance</th>
+                                <th>Status</th>
                                 <th>Balance</th>
                                 <th>Actions</th>
                             </tr>
@@ -409,18 +699,23 @@
                             <!-- Masonry workers will be added here dynamically -->
                         </tbody>
                     </table>
-                    <button class="btn btn-add" id="add-mason">Add Masonry Worker</button>
+                    <button class="btn btn-add neumorphic-btn" id="add-mason"><i class="fas fa-plus"></i> Add Masonry Worker</button>
+                    
+                    <!-- Absent Masons -->
+                    <div class="absent-workers neumorphic">
+                        <h4><i class="fas fa-user-times"></i> Absent Masons Today</h4>
+                        <div id="absent-masons">No absent masons today</div>
+                    </div>
                 </div>
 
                 <!-- Porters Table -->
-                <div class="worker-table">
+                <div class="worker-table neumorphic">
                     <h2>Porters (UGX 10,000/day)</h2>
                     <table id="porter-table">
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Day</th>
-                                <th>Attendance</th>
+                                <th>Status</th>
                                 <th>Balance</th>
                                 <th>Actions</th>
                             </tr>
@@ -429,13 +724,28 @@
                             <!-- Porters will be added here dynamically -->
                         </tbody>
                     </table>
-                    <button class="btn btn-add" id="add-porter">Add Porter</button>
+                    <button class="btn btn-add neumorphic-btn" id="add-porter"><i class="fas fa-plus"></i> Add Porter</button>
+                    
+                    <!-- Absent Porters -->
+                    <div class="absent-workers neumorphic">
+                        <h4><i class="fas fa-user-times"></i> Absent Porters Today</h4>
+                        <div id="absent-porters">No absent porters today</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last Week's Unpaid Balances -->
+            <div class="last-week-balance neumorphic">
+                <h3><i class="fas fa-clock"></i> Last Week's Unpaid Balances</h3>
+                <p>Workers who didn't cash out their full balance last week</p>
+                <div id="last-week-unpaid">
+                    <!-- Unpaid balances will be added here dynamically -->
                 </div>
             </div>
 
             <!-- Summary Section -->
-            <div class="summary">
-                <h3>Weekly Summary</h3>
+            <div class="summary neumorphic">
+                <h3><i class="fas fa-chart-pie"></i> Weekly Summary</h3>
                 <div class="summary-item">
                     <span>Total Masonry Wages:</span>
                     <span id="total-masonry">UGX 0</span>
@@ -444,8 +754,12 @@
                     <span>Total Porter Wages:</span>
                     <span id="total-porter">UGX 0</span>
                 </div>
+                <div class="summary-item">
+                    <span>Total Cash Outs:</span>
+                    <span id="total-cashouts">UGX 0</span>
+                </div>
                 <div class="summary-item summary-total">
-                    <span>Total Wages:</span>
+                    <span>Current Total Wages:</span>
                     <span id="total-wages">UGX 0</span>
                 </div>
             </div>
@@ -453,7 +767,7 @@
 
         <!-- Add Worker Modal -->
         <div id="add-worker-modal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content neumorphic">
                 <div class="modal-header">
                     <h3 id="modal-title">Add New Worker</h3>
                     <span class="close">&times;</span>
@@ -462,19 +776,15 @@
                     <input type="hidden" id="worker-type">
                     <div class="form-group">
                         <label for="first-name">First Name</label>
-                        <input type="text" id="first-name" required>
+                        <input type="text" id="first-name" required class="neumorphic-inset">
                     </div>
                     <div class="form-group">
                         <label for="last-name">Last Name</label>
-                        <input type="text" id="last-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="start-date">Date</label>
-                        <input type="date" id="start-date" required>
+                        <input type="text" id="last-name" required class="neumorphic-inset">
                     </div>
                     <div class="form-actions">
-                        <button type="button" class="btn btn-danger" id="cancel-add">Cancel</button>
-                        <button type="submit" class="btn">Add Worker</button>
+                        <button type="button" class="btn btn-danger neumorphic-btn" id="cancel-add">Cancel</button>
+                        <button type="submit" class="btn btn-primary neumorphic-btn">Add Worker</button>
                     </div>
                 </form>
             </div>
@@ -482,32 +792,31 @@
 
         <!-- Cash Out Modal -->
         <div id="cashout-modal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content neumorphic">
                 <div class="modal-header">
-                    <h3>Cash Out</h3>
+                    <h3><i class="fas fa-money-bill-wave"></i> Cash Out</h3>
                     <span class="close">&times;</span>
                 </div>
                 <form id="cashout-form">
                     <input type="hidden" id="cashout-worker-id">
                     <div class="form-group">
                         <label for="current-balance">Current Balance</label>
-                        <input type="text" id="current-balance" readonly>
+                        <input type="text" id="current-balance" readonly class="neumorphic-inset">
                     </div>
                     <div class="form-group">
                         <label for="cashout-amount">Amount to Cash Out (UGX)</label>
-                        <input type="number" id="cashout-amount" required min="1000" step="1000">
+                        <input type="number" id="cashout-amount" required min="1000" step="1000" class="neumorphic-inset">
                     </div>
                     <div class="form-group">
                         <label for="new-balance">Balance After Cash Out</label>
-                        <input type="text" id="new-balance" readonly>
+                        <input type="text" id="new-balance" readonly class="neumorphic-inset">
                     </div>
                     <div class="form-group">
-                        <label for="cashout-date">Date</label>
-                        <input type="date" id="cashout-date" required>
+                        <button type="button" class="btn btn-primary neumorphic-btn" id="cashout-all">Cash Out All</button>
                     </div>
                     <div class="form-actions">
-                        <button type="button" class="btn btn-danger" id="cancel-cashout">Cancel</button>
-                        <button type="submit" class="btn">Process Cash Out</button>
+                        <button type="button" class="btn btn-danger neumorphic-btn" id="cancel-cashout">Cancel</button>
+                        <button type="submit" class="btn btn-primary neumorphic-btn">Process Cash Out</button>
                     </div>
                 </form>
             </div>
@@ -515,29 +824,43 @@
 
         <!-- Balance Details Modal -->
         <div id="balance-modal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content neumorphic">
                 <div class="modal-header">
-                    <h3>Balance Details</h3>
+                    <h3><i class="fas fa-wallet"></i> Balance Details</h3>
                     <span class="close">&times;</span>
                 </div>
                 <div class="form-group">
+                    <label>Worker Name</label>
+                    <input type="text" id="worker-name" readonly class="neumorphic-inset">
+                </div>
+                <div class="form-group">
                     <label>Current Balance</label>
-                    <input type="text" id="balance-details" readonly>
+                    <input type="text" id="balance-details" readonly class="neumorphic-inset">
+                </div>
+                <div class="form-group">
+                    <label>Total Days Present</label>
+                    <input type="text" id="days-present" readonly class="neumorphic-inset">
+                </div>
+                <div class="form-group">
+                    <label>Total Days Absent</label>
+                    <input type="text" id="days-absent" readonly class="neumorphic-inset">
                 </div>
                 <div class="form-group">
                     <label>Total Earned</label>
-                    <input type="text" id="total-earned" readonly>
+                    <input type="text" id="total-earned" readonly class="neumorphic-inset">
                 </div>
                 <div class="form-group">
                     <label>Total Cashed Out</label>
-                    <input type="text" id="total-cashed-out" readonly>
+                    <input type="text" id="total-cashed-out" readonly class="neumorphic-inset">
                 </div>
-                <div class="transaction-history" id="transaction-history">
-                    <h4>Transaction History</h4>
-                    <!-- Transactions will be added here dynamically -->
+                <div class="transaction-history">
+                    <h4><i class="fas fa-history"></i> Transaction History</h4>
+                    <div id="transaction-history">
+                        <!-- Transactions will be added here dynamically -->
+                    </div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn" id="close-balance">Close</button>
+                    <button type="button" class="btn btn-primary neumorphic-btn" id="close-balance">Close</button>
                 </div>
             </div>
         </div>
@@ -556,9 +879,19 @@
             "nuiin" + "nelyce" + "@gmail.com"
         ];
 
+        // Attendance time window (5:00 PM to 7:00 PM)
+        const ATTENDANCE_START_HOUR = 17; // 5 PM
+        const ATTENDANCE_END_HOUR = 19;   // 7 PM
+
+        // Wages
+        const MASON_WAGE = 20000;
+        const PORTER_WAGE = 10000;
+
         // DOM Elements
         const loginScreen = document.getElementById('login-screen');
         const mainContent = document.getElementById('main-content');
+        const dayNavigation = document.getElementById('day-navigation');
+        const timeNotification = document.getElementById('time-notification');
         const masonryTable = document.getElementById('masonry-workers');
         const porterTable = document.getElementById('porters');
         const addMasonBtn = document.getElementById('add-mason');
@@ -577,35 +910,54 @@
         const totalMasonry = document.getElementById('total-masonry');
         const totalPorter = document.getElementById('total-porter');
         const totalWages = document.getElementById('total-wages');
+        const totalCashouts = document.getElementById('total-cashouts');
         const userEmailInput = document.getElementById('user-email');
         const loginError = document.getElementById('login-error');
+        const absentMasons = document.getElementById('absent-masons');
+        const absentPorters = document.getElementById('absent-porters');
+        const lastWeekUnpaid = document.getElementById('last-week-unpaid');
+        const totalWorkersStat = document.getElementById('total-workers');
+        const presentTodayStat = document.getElementById('present-today');
+        const absentTodayStat = document.getElementById('absent-today');
+        const totalWagesStat = document.getElementById('total-wages-stat');
+        const cashoutAllBtn = document.getElementById('cashout-all');
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             // Check if already authenticated
-            if (localStorage.getItem('authenticated') === 'true') {
-                loginScreen.style.display = 'none';
-                mainContent.style.display = 'block';
-                initializeApp();
-            } else {
-                loginScreen.style.display = 'flex';
-                mainContent.style.display = 'none';
+            if (localStorage.getItem('authenticated') {
+                const email = localStorage.getItem('authenticated');
+                if (ALLOWED_EMAILS.includes(email)) {
+                    loginScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    initializeApp();
+                    return;
+                }
             }
             
-            // Set default date to today
-            document.getElementById('start-date').valueAsDate = new Date();
-            document.getElementById('cashout-date').valueAsDate = new Date();
+            // Not authenticated
+            loginScreen.style.display = 'flex';
+            mainContent.style.display = 'none';
         });
 
         function initializeApp() {
             // Load data from localStorage if available
             loadData();
             
+            // Setup day navigation
+            setupDayNavigation();
+            
+            // Check attendance time window
+            checkAttendanceTime();
+            
             // Render workers tables
             renderWorkersTables();
             
-            // Update summary
+            // Update summary and stats
             updateSummary();
+            updateStats();
+            showAbsentWorkers();
+            showLastWeekUnpaid();
             
             // Event listeners
             addMasonBtn.addEventListener('click', () => openAddWorkerModal('masonry'));
@@ -625,6 +977,9 @@
             // Calculate new balance when cashout amount changes
             document.getElementById('cashout-amount').addEventListener('input', updateNewBalance);
             
+            // Cash out all button
+            cashoutAllBtn.addEventListener('click', cashoutAll);
+            
             // Close modal when clicking outside
             window.addEventListener('click', (e) => {
                 if (e.target === addWorkerModal) closeModal(addWorkerModal);
@@ -640,13 +995,108 @@
                 // Grant access
                 loginScreen.style.display = 'none';
                 mainContent.style.display = 'block';
-                localStorage.setItem('authenticated', 'true');
+                localStorage.setItem('authenticated', email);
                 initializeApp();
             } else {
                 // Deny access
                 loginError.style.display = 'block';
                 userEmailInput.style.borderColor = 'red';
+                setTimeout(() => {
+                    loginError.style.display = 'none';
+                    userEmailInput.style.borderColor = '';
+                }, 3000);
             }
+        }
+
+        function setupDayNavigation() {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const today = new Date();
+            const currentDay = today.getDay();
+            
+            dayNavigation.innerHTML = '';
+            
+            days.forEach((day, index) => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day-item';
+                
+                if (index === currentDay) {
+                    dayElement.classList.add('current');
+                }
+                
+                // Check if this day is completed (has attendance records)
+                const isCompleted = checkIfDayCompleted(index);
+                if (isCompleted) {
+                    dayElement.classList.add('completed');
+                }
+                
+                dayElement.textContent = day.substring(0, 3); // Show short day name
+                dayElement.addEventListener('click', () => showDayDetails(index));
+                dayNavigation.appendChild(dayElement);
+            });
+        }
+
+        function showDayDetails(dayIndex) {
+            const today = new Date();
+            const targetDate = new Date(today);
+            targetDate.setDate(today.getDate() - today.getDay() + dayIndex);
+            const dateString = targetDate.toISOString().split('T')[0];
+            
+            let presentCount = 0;
+            let absentCount = 0;
+            
+            // Count present and absent workers for this day
+            for (const type of ['masonry', 'porter']) {
+                for (const worker of workers[type]) {
+                    const attendance = worker.attendance.find(a => a.date === dateString);
+                    if (attendance) {
+                        if (attendance.present) presentCount++;
+                        else absentCount++;
+                    }
+                }
+            }
+            
+            alert(`Day: ${getDayOfWeek(dateString)}\nDate: ${formatDate(dateString)}\nPresent: ${presentCount}\nAbsent: ${absentCount}`);
+        }
+
+        function checkIfDayCompleted(dayIndex) {
+            // Check if any worker has attendance for this day of the week
+            const today = new Date();
+            const targetDate = new Date(today);
+            targetDate.setDate(today.getDate() - today.getDay() + dayIndex);
+            const dateString = targetDate.toISOString().split('T')[0];
+            
+            // Check all workers for attendance on this date
+            for (const type of ['masonry', 'porter']) {
+                for (const worker of workers[type]) {
+                    if (worker.attendance.some(a => a.date === dateString)) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        function checkAttendanceTime() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinutes = now.getMinutes();
+            
+            // Check if current time is within attendance window (5:00 PM - 7:00 PM)
+            const isWithinWindow = (
+                (currentHour > ATTENDANCE_START_HOUR || 
+                (currentHour === ATTENDANCE_START_HOUR && currentMinutes >= 0)) &&
+                (currentHour < ATTENDANCE_END_HOUR || 
+                (currentHour === ATTENDANCE_END_HOUR && currentMinutes <= 0))
+            );
+            
+            if (!isWithinWindow) {
+                timeNotification.style.display = 'block';
+            } else {
+                timeNotification.style.display = 'none';
+            }
+            
+            return isWithinWindow;
         }
 
         function openAddWorkerModal(type) {
@@ -670,10 +1120,9 @@
             
             const firstName = document.getElementById('first-name').value.trim();
             const lastName = document.getElementById('last-name').value.trim();
-            const date = document.getElementById('start-date').value;
             const type = workerTypeInput.value;
             
-            if (!firstName || !lastName || !date) return;
+            if (!firstName || !lastName) return;
             
             const worker = {
                 id: Date.now().toString(),
@@ -696,6 +1145,7 @@
             // Update UI
             renderWorkersTables();
             updateSummary();
+            updateStats();
             saveData();
         }
 
@@ -704,25 +1154,27 @@
             masonryTable.innerHTML = '';
             porterTable.innerHTML = '';
             
+            // Get today's date
+            const today = new Date().toISOString().split('T')[0];
+            const dayOfWeek = getDayOfWeek(today);
+            
             // Render masonry workers
             workers.masonry.forEach(worker => {
-                const row = createWorkerRow(worker);
+                const row = createWorkerRow(worker, today, dayOfWeek);
                 masonryTable.appendChild(row);
             });
             
             // Render porters
             workers.porter.forEach(worker => {
-                const row = createWorkerRow(worker);
+                const row = createWorkerRow(worker, today, dayOfWeek);
                 porterTable.appendChild(row);
             });
         }
 
-        function createWorkerRow(worker) {
-            const today = new Date().toISOString().split('T')[0];
-            const dayOfWeek = getDayOfWeek(today);
-            
+        function createWorkerRow(worker, today, dayOfWeek) {
             // Check if worker has attendance for today
             const todayAttendance = worker.attendance.find(a => a.date === today);
+            const isWithinTimeWindow = checkAttendanceTime();
             
             const row = document.createElement('tr');
             row.dataset.id = worker.id;
@@ -730,21 +1182,36 @@
             
             row.innerHTML = `
                 <td>${worker.firstName} ${worker.lastName}</td>
-                <td>${dayOfWeek}</td>
-                <td class="checkbox-container">
-                    <label>
-                        <input type="checkbox" class="present-checkbox" ${todayAttendance?.present ? 'checked' : ''}>
-                        Present
-                    </label>
-                    <label>
-                        <input type="checkbox" class="absent-checkbox" ${todayAttendance?.present === false ? 'checked' : ''}>
-                        Absent
-                    </label>
-                </td>
-                <td class="balance" style="cursor: pointer;">UGX ${worker.balance.toLocaleString()}</td>
                 <td>
-                    <button class="btn btn-small btn-danger delete-worker">Delete</button>
-                    <button class="btn btn-small cashout-btn" ${worker.balance <= 0 ? 'disabled' : ''}>Cash Out</button>
+                    <div class="checkbox-container">
+                        <label>
+                            <input type="checkbox" class="present-checkbox" 
+                                ${todayAttendance?.present ? 'checked' : ''}
+                                ${todayAttendance || !isWithinTimeWindow ? 'disabled' : ''}>
+                            Present
+                        </label>
+                        <label>
+                            <input type="checkbox" class="absent-checkbox" 
+                                ${todayAttendance?.present === false ? 'checked' : ''}
+                                ${todayAttendance || !isWithinTimeWindow ? 'disabled' : ''}>
+                            Absent
+                        </label>
+                    </div>
+                    ${todayAttendance ? 
+                        `<small>Marked ${todayAttendance.present ? 'Present' : 'Absent'}</small>` : 
+                        ''}
+                </td>
+                <td class="balance" style="cursor: pointer;">
+                    <span>UGX ${worker.balance.toLocaleString()}</span>
+                    <button class="btn btn-small" style="margin-left: 5px; padding: 2px 5px;">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-small btn-danger delete-worker"><i class="fas fa-trash"></i></button>
+                    <button class="btn btn-small cashout-btn" ${worker.balance <= 0 ? 'disabled' : ''}>
+                        <i class="fas fa-money-bill-wave"></i>
+                    </button>
                 </td>
             `;
             
@@ -752,11 +1219,17 @@
             const presentCheckbox = row.querySelector('.present-checkbox');
             const absentCheckbox = row.querySelector('.absent-checkbox');
             const balanceCell = row.querySelector('.balance');
+            const infoBtn = balanceCell.querySelector('button');
             const deleteBtn = row.querySelector('.delete-worker');
             const cashoutBtn = row.querySelector('.cashout-btn');
             
             presentCheckbox.addEventListener('change', function() {
                 if (this.checked) {
+                    if (!checkAttendanceTime()) {
+                        alert('Attendance can only be marked between 5:00 PM and 7:00 PM');
+                        this.checked = false;
+                        return;
+                    }
                     absentCheckbox.checked = false;
                     markAttendance(worker, true);
                 }
@@ -764,12 +1237,21 @@
             
             absentCheckbox.addEventListener('change', function() {
                 if (this.checked) {
+                    if (!checkAttendanceTime()) {
+                        alert('Attendance can only be marked between 5:00 PM and 7:00 PM');
+                        this.checked = false;
+                        return;
+                    }
                     presentCheckbox.checked = false;
                     markAttendance(worker, false);
                 }
             });
             
             balanceCell.addEventListener('click', () => showBalanceDetails(worker));
+            infoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showBalanceDetails(worker);
+            });
             deleteBtn.addEventListener('click', () => deleteWorker(worker));
             cashoutBtn.addEventListener('click', () => openCashoutModal(worker));
             
@@ -785,7 +1267,7 @@
             
             if (isPresent) {
                 // Add wage if present
-                const wage = worker.type === 'masonry' ? 20000 : 10000;
+                const wage = worker.type === 'masonry' ? MASON_WAGE : PORTER_WAGE;
                 worker.balance += wage;
                 
                 worker.attendance.push({
@@ -805,17 +1287,32 @@
             // Update UI
             renderWorkersTables();
             updateSummary();
+            updateStats();
+            showAbsentWorkers();
             saveData();
+            setupDayNavigation(); // Update day navigation to show completed day
         }
 
         function openCashoutModal(worker) {
             document.getElementById('cashout-worker-id').value = worker.id;
             document.getElementById('current-balance').value = `UGX ${worker.balance.toLocaleString()}`;
             document.getElementById('cashout-amount').value = '';
+            document.getElementById('cashout-amount').min = 1000;
+            document.getElementById('cashout-amount').max = worker.balance;
+            document.getElementById('cashout-amount').step = 1000;
             document.getElementById('new-balance').value = '';
-            document.getElementById('cashout-date').valueAsDate = new Date();
             
             cashoutModal.style.display = 'block';
+        }
+
+        function cashoutAll() {
+            const workerId = document.getElementById('cashout-worker-id').value;
+            const worker = findWorkerById(workerId);
+            
+            if (!worker) return;
+            
+            document.getElementById('cashout-amount').value = worker.balance;
+            updateNewBalance();
         }
 
         function updateNewBalance() {
@@ -835,23 +1332,12 @@
             
             const workerId = document.getElementById('cashout-worker-id').value;
             const cashoutAmount = parseInt(document.getElementById('cashout-amount').value);
-            const date = document.getElementById('cashout-date').value;
+            const date = new Date().toISOString().split('T')[0];
             
-            if (!workerId || !cashoutAmount || cashoutAmount <= 0 || !date) return;
+            if (!workerId || !cashoutAmount || cashoutAmount <= 0) return;
             
             // Find worker
-            let worker;
-            let workerType;
-            
-            for (const type of ['masonry', 'porter']) {
-                const foundWorker = workers[type].find(w => w.id === workerId);
-                if (foundWorker) {
-                    worker = foundWorker;
-                    workerType = type;
-                    break;
-                }
-            }
-            
+            const worker = findWorkerById(workerId);
             if (!worker) return;
             
             // Validate cashout amount
@@ -877,34 +1363,47 @@
             // Update UI
             renderWorkersTables();
             updateSummary();
+            updateStats();
             saveData();
         }
 
+        function findWorkerById(workerId) {
+            for (const type of ['masonry', 'porter']) {
+                const foundWorker = workers[type].find(w => w.id === workerId);
+                if (foundWorker) return foundWorker;
+            }
+            return null;
+        }
+
         function showBalanceDetails(worker) {
+            document.getElementById('worker-name').value = `${worker.firstName} ${worker.lastName}`;
             document.getElementById('balance-details').value = `UGX ${worker.balance.toLocaleString()}`;
             
-            // Calculate total earned and cashed out
-            const wage = worker.type === 'masonry' ? 20000 : 10000;
+            // Calculate stats
+            const wage = worker.type === 'masonry' ? MASON_WAGE : PORTER_WAGE;
             const daysPresent = worker.attendance.filter(a => a.present).length;
+            const daysAbsent = worker.attendance.filter(a => a.present === false).length;
             const totalEarned = daysPresent * wage;
             const totalCashedOut = worker.transactions.reduce((sum, t) => sum + t.amount, 0);
             
+            document.getElementById('days-present').value = daysPresent;
+            document.getElementById('days-absent').value = daysAbsent;
             document.getElementById('total-earned').value = `UGX ${totalEarned.toLocaleString()}`;
             document.getElementById('total-cashed-out').value = `UGX ${totalCashedOut.toLocaleString()}`;
             
             // Display transaction history
             const historyContainer = document.getElementById('transaction-history');
-            historyContainer.innerHTML = '<h4>Transaction History</h4>';
+            historyContainer.innerHTML = '';
             
             if (worker.transactions.length === 0) {
-                historyContainer.innerHTML += '<p>No transactions yet</p>';
+                historyContainer.innerHTML = '<p>No transactions yet</p>';
             } else {
                 worker.transactions.forEach(transaction => {
                     const transactionEl = document.createElement('div');
                     transactionEl.className = 'transaction-item';
                     transactionEl.innerHTML = `
-                        <strong>${transaction.day}, ${transaction.date}</strong><br>
-                        Cashed out: UGX ${transaction.amount.toLocaleString()}
+                        <div><strong>${transaction.day}, ${formatDate(transaction.date)}</strong></div>
+                        <div>Cashed out: <strong>UGX ${transaction.amount.toLocaleString()}</strong></div>
                     `;
                     historyContainer.appendChild(transactionEl);
                 });
@@ -920,23 +1419,177 @@
             
             renderWorkersTables();
             updateSummary();
+            updateStats();
+            showAbsentWorkers();
             saveData();
         }
 
         function updateSummary() {
             const masonryTotal = workers.masonry.reduce((sum, worker) => sum + worker.balance, 0);
             const porterTotal = workers.porter.reduce((sum, worker) => sum + worker.balance, 0);
+            
+            // Calculate total cashouts
+            let totalCashoutsAmount = 0;
+            for (const type of ['masonry', 'porter']) {
+                for (const worker of workers[type]) {
+                    totalCashoutsAmount += worker.transactions.reduce((sum, t) => sum + t.amount, 0);
+                }
+            }
+            
             const total = masonryTotal + porterTotal;
             
             totalMasonry.textContent = `UGX ${masonryTotal.toLocaleString()}`;
             totalPorter.textContent = `UGX ${porterTotal.toLocaleString()}`;
+            totalCashouts.textContent = `UGX ${totalCashoutsAmount.toLocaleString()}`;
             totalWages.textContent = `UGX ${total.toLocaleString()}`;
+            totalWagesStat.textContent = `UGX ${total.toLocaleString()}`;
+        }
+
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            let presentCount = 0;
+            let absentCount = 0;
+            
+            // Count present and absent workers for today
+            for (const type of ['masonry', 'porter']) {
+                for (const worker of workers[type]) {
+                    const attendance = worker.attendance.find(a => a.date === today);
+                    if (attendance) {
+                        if (attendance.present) presentCount++;
+                        else absentCount++;
+                    }
+                }
+            }
+            
+            totalWorkersStat.textContent = workers.masonry.length + workers.porter.length;
+            presentTodayStat.textContent = presentCount;
+            absentTodayStat.textContent = absentCount;
+        }
+
+        function showAbsentWorkers() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Find absent masons
+            const absentMasonsList = workers.masonry.filter(worker => {
+                const attendance = worker.attendance.find(a => a.date === today);
+                return attendance && !attendance.present;
+            });
+            
+            // Find absent porters
+            const absentPortersList = workers.porter.filter(worker => {
+                const attendance = worker.attendance.find(a => a.date === today);
+                return attendance && !attendance.present;
+            });
+            
+            // Update UI
+            if (absentMasonsList.length > 0) {
+                absentMasons.innerHTML = absentMasonsList.map(worker => 
+                    `<div>${worker.firstName} ${worker.lastName}</div>`
+                ).join('');
+            } else {
+                absentMasons.innerHTML = 'No absent masons today';
+            }
+            
+            if (absentPortersList.length > 0) {
+                absentPorters.innerHTML = absentPortersList.map(worker => 
+                    `<div>${worker.firstName} ${worker.lastName}</div>`
+                ).join('');
+            } else {
+                absentPorters.innerHTML = 'No absent porters today';
+            }
+        }
+
+        function showLastWeekUnpaid() {
+            // Get dates for last week (Monday to Friday)
+            const lastWeekDates = getLastWeekDates();
+            
+            // Find workers with unpaid balances from last week
+            const unpaidWorkers = [];
+            
+            for (const type of ['masonry', 'porter']) {
+                for (const worker of workers[type]) {
+                    // Check if worker worked last week but didn't cash out all
+                    const workedLastWeek = worker.attendance.some(a => 
+                        lastWeekDates.includes(a.date) && a.present
+                    );
+                    
+                    if (workedLastWeek && worker.balance > 0) {
+                        // Calculate how much they earned last week
+                        const lastWeekEarnings = worker.attendance
+                            .filter(a => lastWeekDates.includes(a.date) && a.present)
+                            .length * (type === 'masonry' ? MASON_WAGE : PORTER_WAGE);
+                            
+                        unpaidWorkers.push({
+                            worker,
+                            lastWeekEarnings,
+                            type
+                        });
+                    }
+                }
+            }
+            
+            // Update UI
+            lastWeekUnpaid.innerHTML = '';
+            
+            if (unpaidWorkers.length === 0) {
+                lastWeekUnpaid.innerHTML = '<p>All workers cashed out their full balance last week</p>';
+                return;
+            }
+            
+            unpaidWorkers.forEach(({worker, lastWeekEarnings, type}) => {
+                const card = document.createElement('div');
+                card.className = 'balance-card neumorphic';
+                card.innerHTML = `
+                    <div class="balance-info">
+                        <strong>${worker.firstName} ${worker.lastName}</strong> (${type === 'masonry' ? 'Mason' : 'Porter'})
+                        <div>Balance: UGX ${worker.balance.toLocaleString()}</div>
+                        <div>Last Week: UGX ${lastWeekEarnings.toLocaleString()}</div>
+                    </div>
+                    <div class="balance-actions">
+                        <button class="btn btn-small cashout-btn" data-id="${worker.id}">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Add event listener to cashout button
+                const cashoutBtn = card.querySelector('.cashout-btn');
+                cashoutBtn.addEventListener('click', () => {
+                    openCashoutModal(worker);
+                });
+                
+                lastWeekUnpaid.appendChild(card);
+            });
+        }
+
+        function getLastWeekDates() {
+            // Get dates for last week (Monday to Friday)
+            const dates = [];
+            const today = new Date();
+            const lastMonday = new Date(today);
+            
+            // Go back to last Monday
+            lastMonday.setDate(today.getDate() - today.getDay() + 1 - 7);
+            
+            // Add Monday to Friday dates
+            for (let i = 0; i < 5; i++) {
+                const date = new Date(lastMonday);
+                date.setDate(lastMonday.getDate() + i);
+                dates.push(date.toISOString().split('T')[0]);
+            }
+            
+            return dates;
         }
 
         function getDayOfWeek(dateString) {
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const date = new Date(dateString);
             return days[date.getDay()];
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         }
 
         function saveData() {
