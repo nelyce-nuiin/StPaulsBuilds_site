@@ -30,12 +30,15 @@
             color: var(--dark-color);
             line-height: 1.6;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            flex: 1;
         }
 
         /* Neumorphic styles */
@@ -533,6 +536,21 @@
             color: var(--secondary-color);
         }
 
+        /* Footer with copyright */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .tables-container {
@@ -765,6 +783,13 @@
             </div>
         </div>
 
+        <!-- Footer with Copyright -->
+        <footer class="neumorphic">
+            <div class="copyright">
+                &copy; 2025 NUIIN NELYCE - Founder and CEO of LANA NELYCE
+            </div>
+        </footer>
+
         <!-- Add Worker Modal -->
         <div id="add-worker-modal" class="modal">
             <div class="modal-content neumorphic">
@@ -862,6 +887,11 @@
                 <div class="form-actions">
                     <button type="button" class="btn btn-primary neumorphic-btn" id="close-balance">Close</button>
                 </div>
+                <div class="summary-item">
+    <button class="btn btn-primary" id="export-data">Export Data</button>
+    <button class="btn btn-primary" id="import-data">Import Data</button>
+    <input type="file" id="import-file" style="display: none;" accept=".json">
+</div>
             </div>
         </div>
     </div>
@@ -925,7 +955,7 @@
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             // Check if already authenticated
-            if (localStorage.getItem('authenticated') {
+            if (localStorage.getItem('authenticated')) {
                 const email = localStorage.getItem('authenticated');
                 if (ALLOWED_EMAILS.includes(email)) {
                     loginScreen.style.display = 'none';
@@ -1591,6 +1621,63 @@
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         }
+
+        // Add to your existing event listeners
+document.getElementById('export-data').addEventListener('click', exportData);
+document.getElementById('import-data').addEventListener('click', () => {
+    document.getElementById('import-file').click();
+});
+document.getElementById('import-file').addEventListener('change', importData);
+
+function exportData() {
+    const data = {
+        workers: workers,
+        exportedAt: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `construction-data-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    
+    URL.revokeObjectURL(url);
+}
+
+function importData(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!confirm('Importing data will overwrite current data. Continue?')) {
+        e.target.value = '';
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const data = JSON.parse(event.target.result);
+            if (data.workers) {
+                workers = data.workers;
+                renderWorkersTables();
+                updateSummary();
+                updateStats();
+                showAbsentWorkers();
+                showLastWeekUnpaid();
+                saveData();
+                alert('Data imported successfully!');
+            } else {
+                alert('Invalid data format');
+            }
+        } catch (error) {
+            alert('Error parsing file: ' + error.message);
+        }
+        e.target.value = '';
+    };
+    reader.readAsText(file);
+}
 
         function saveData() {
             localStorage.setItem('constructionWorkers', JSON.stringify(workers));
