@@ -536,6 +536,24 @@
             color: var(--secondary-color);
         }
 
+        /* Data Management Section */
+        .data-actions-container {
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .data-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        #backup-status {
+            text-align: center;
+            margin-top: 10px;
+        }
+
         /* Footer with copyright */
         footer {
             text-align: center;
@@ -594,6 +612,11 @@
 
             .stats-container {
                 flex-direction: column;
+            }
+
+            .data-actions {
+                flex-direction: column;
+                align-items: center;
             }
         }
 
@@ -670,6 +693,24 @@
         </header>
 
         <div class="container">
+            <!-- Data Backup/Restore Section -->
+            <div class="neumorphic data-actions-container">
+                <h2><i class="fas fa-database"></i> Data Management</h2>
+                <div class="data-actions">
+                    <button class="btn btn-success" id="export-data">
+                        <i class="fas fa-file-export"></i> Export Data
+                    </button>
+                    <button class="btn btn-primary" id="import-data">
+                        <i class="fas fa-file-import"></i> Import Data
+                    </button>
+                    <button class="btn btn-danger" id="clear-data">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
+                    <input type="file" id="import-file" style="display: none;" accept=".json">
+                </div>
+                <div id="backup-status"></div>
+            </div>
+
             <!-- Stats Overview -->
             <div class="stats-container">
                 <div class="stat-card neumorphic">
@@ -887,11 +928,6 @@
                 <div class="form-actions">
                     <button type="button" class="btn btn-primary neumorphic-btn" id="close-balance">Close</button>
                 </div>
-                <div class="summary-item">
-    <button class="btn btn-primary" id="export-data">Export Data</button>
-    <button class="btn btn-primary" id="import-data">Import Data</button>
-    <input type="file" id="import-file" style="display: none;" accept=".json">
-</div>
             </div>
         </div>
     </div>
@@ -952,6 +988,221 @@
         const totalWagesStat = document.getElementById('total-wages-stat');
         const cashoutAllBtn = document.getElementById('cashout-all');
 
+        // Enhanced Data Management System
+        class DataManager {
+            constructor() {
+                this.storageKey = 'constructionSiteData';
+                this.backupInterval = 3600000; // 1 hour in milliseconds
+                this.init();
+            }
+
+            init() {
+                // Set up automatic backups
+                setInterval(() => this.createBackup(), this.backupInterval);
+                
+                // Set up event listeners for data management
+                document.getElementById('export-data').addEventListener('click', () => this.exportData());
+                document.getElementById('import-data').addEventListener('click', () => document.getElementById('import-file').click());
+                document.getElementById('import-file').addEventListener('change', (e) => this.importData(e));
+                document.getElementById('clear-data').addEventListener('click', () => this.clearData());
+            }
+
+            getCurrentData() {
+                return {
+                    workers: workers,
+                    lastUpdated: new Date().toISOString(),
+                    version: '1.0'
+                };
+            }
+
+            saveData() {
+                try {
+                    const data = this.getCurrentData();
+                    localStorage.setItem(this.storageKey, JSON.stringify(data));
+                    
+                    // Also create a backup in localStorage
+                    this.createBackup();
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                    this.showStatus('Error saving data', 'error');
+                    return false;
+                }
+            }
+
+            loadData() {
+                try {
+                    const savedData = localStorage.getItem(this.storageKey);
+                    if (savedData) {
+                        const parsedData = JSON.parse(savedData);
+                        
+                        // Validate data structure
+                        if (parsedData.workers && Array.isArray(parsedData.workers.masonry)) {
+                            workers = parsedData.workers;
+                            this.showStatus('Data loaded successfully', 'success');
+                            return true;
+                        }
+                    }
+                    
+                    // If no valid data found, check for backups
+                    return this.restoreFromBackup();
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    this.showStatus('Error loading data', 'error');
+                    return false;
+                }
+            }
+
+            createBackup() {
+                try {
+                    const data = this.getCurrentData();
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                    const backupKey = `${this.storageKey}_backup_${timestamp}`;
+                    
+                    localStorage.setItem(backupKey, JSON.stringify(data));
+                    
+                    // Keep only the last 5 backups
+                    this.cleanupOldBackups();
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error creating backup:', error);
+                    return false;
+                }
+            }
+
+            cleanupOldBackups() {
+                const backupKeys = Object.keys(localStorage)
+                    .filter(key => key.startsWith(`${this.storageKey}_backup_`))
+                    .sort();
+                
+                // Remove all but the last 5 backups
+                while (backupKeys.length > 5) {
+                    const keyToRemove = backupKeys.shift();
+                    localStorage.removeItem(keyToRemove);
+                }
+            }
+
+            restoreFromBackup() {
+                try {
+                    const backupKeys = Object.keys(localStorage)
+                        .filter(key => key.startsWith(`${this.storageKey}_backup_`))
+                        .sort()
+                        .reverse(); // Newest first
+                    
+                    for (const key of backupKeys) {
+                        const backupData = JSON.parse(localStorage.getItem(key));
+                        
+                        if (backupData.workers && Array.isArray(backupData.workers.masonry)) {
+                            workers = backupData.workers;
+                            this.showStatus('Data restored from backup', 'success');
+                            return true;
+                        }
+                    }
+                    
+                    this.showStatus('No valid data found', 'warning');
+                    return false;
+                } catch (error) {
+                    console.error('Error restoring from backup:', error);
+                    this.showStatus('Error restoring data', 'error');
+                    return false;
+                }
+            }
+
+            exportData() {
+                try {
+                    const data = this.getCurrentData();
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `construction-data-${new Date().toISOString().split('T')[0]}.json`;
+                    a.click();
+                    
+                    URL.revokeObjectURL(url);
+                    this.showStatus('Data exported successfully', 'success');
+                } catch (error) {
+                    console.error('Error exporting data:', error);
+                    this.showStatus('Error exporting data', 'error');
+                }
+            }
+
+            importData(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                if (!confirm('Importing data will overwrite current data. Continue?')) {
+                    event.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        // Validate imported data
+                        if (importedData.workers && Array.isArray(importedData.workers.masonry)) {
+                            workers = importedData.workers;
+                            this.saveData();
+                            
+                            // Refresh UI
+                            renderWorkersTables();
+                            updateSummary();
+                            updateStats();
+                            showAbsentWorkers();
+                            showLastWeekUnpaid();
+                            
+                            this.showStatus('Data imported successfully', 'success');
+                        } else {
+                            throw new Error('Invalid data format');
+                        }
+                    } catch (error) {
+                        console.error('Error importing data:', error);
+                        this.showStatus('Error importing data: ' + error.message, 'error');
+                    }
+                    event.target.value = '';
+                };
+                reader.readAsText(file);
+            }
+
+            clearData() {
+                if (confirm('Are you sure you want to clear ALL data? This cannot be undone!')) {
+                    localStorage.clear();
+                    workers = { masonry: [], porter: [] };
+                    
+                    // Refresh UI
+                    renderWorkersTables();
+                    updateSummary();
+                    updateStats();
+                    showAbsentWorkers();
+                    showLastWeekUnpaid();
+                    
+                    this.showStatus('All data cleared', 'warning');
+                }
+            }
+
+            showStatus(message, type = 'info') {
+                const statusElement = document.getElementById('backup-status');
+                statusElement.textContent = message;
+                statusElement.style.color = {
+                    'success': 'green',
+                    'error': 'red',
+                    'warning': 'orange',
+                    'info': 'blue'
+                }[type];
+                
+                setTimeout(() => {
+                    statusElement.textContent = '';
+                }, 5000);
+            }
+        }
+
+        // Initialize the data manager
+        const dataManager = new DataManager();
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             // Check if already authenticated
@@ -971,8 +1222,8 @@
         });
 
         function initializeApp() {
-            // Load data from localStorage if available
-            loadData();
+            // Load data using the data manager
+            dataManager.loadData();
             
             // Setup day navigation
             setupDayNavigation();
@@ -1172,11 +1423,12 @@
             // Close modal
             closeModal(addWorkerModal);
             
-            // Update UI
+            // Update UI and save data
             renderWorkersTables();
             updateSummary();
             updateStats();
-            saveData();
+            dataManager.saveData();
+            setupDayNavigation(); // Update day navigation to show completed day
         }
 
         function renderWorkersTables() {
@@ -1314,12 +1566,12 @@
                 });
             }
             
-            // Update UI
+            // Update UI and save data
             renderWorkersTables();
             updateSummary();
             updateStats();
             showAbsentWorkers();
-            saveData();
+            dataManager.saveData();
             setupDayNavigation(); // Update day navigation to show completed day
         }
 
@@ -1390,11 +1642,11 @@
             // Close modal
             closeModal(cashoutModal);
             
-            // Update UI
+            // Update UI and save data
             renderWorkersTables();
             updateSummary();
             updateStats();
-            saveData();
+            dataManager.saveData();
         }
 
         function findWorkerById(workerId) {
@@ -1447,11 +1699,12 @@
             
             workers[worker.type] = workers[worker.type].filter(w => w.id !== worker.id);
             
+            // Update UI and save data
             renderWorkersTables();
             updateSummary();
             updateStats();
             showAbsentWorkers();
-            saveData();
+            dataManager.saveData();
         }
 
         function updateSummary() {
@@ -1620,74 +1873,6 @@
         function formatDate(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        }
-
-        // Add to your existing event listeners
-document.getElementById('export-data').addEventListener('click', exportData);
-document.getElementById('import-data').addEventListener('click', () => {
-    document.getElementById('import-file').click();
-});
-document.getElementById('import-file').addEventListener('change', importData);
-
-function exportData() {
-    const data = {
-        workers: workers,
-        exportedAt: new Date().toISOString()
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `construction-data-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    
-    URL.revokeObjectURL(url);
-}
-
-function importData(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    if (!confirm('Importing data will overwrite current data. Continue?')) {
-        e.target.value = '';
-        return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        try {
-            const data = JSON.parse(event.target.result);
-            if (data.workers) {
-                workers = data.workers;
-                renderWorkersTables();
-                updateSummary();
-                updateStats();
-                showAbsentWorkers();
-                showLastWeekUnpaid();
-                saveData();
-                alert('Data imported successfully!');
-            } else {
-                alert('Invalid data format');
-            }
-        } catch (error) {
-            alert('Error parsing file: ' + error.message);
-        }
-        e.target.value = '';
-    };
-    reader.readAsText(file);
-}
-
-        function saveData() {
-            localStorage.setItem('constructionWorkers', JSON.stringify(workers));
-        }
-
-        function loadData() {
-            const savedData = localStorage.getItem('constructionWorkers');
-            if (savedData) {
-                workers = JSON.parse(savedData);
-            }
         }
     </script>
 </body>
